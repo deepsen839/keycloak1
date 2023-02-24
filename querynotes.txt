@@ -1,0 +1,13 @@
+query {userNotes{
+  title,description,path
+}
+      }
+      mutation ($file:Upload){addTodo(title:"mytitle",description:"my description"file1:$file){
+  ok,todo
+}
+}
+query {userNotes{
+  title,description,path,id
+}
+      }
+  

@@ -4,9 +4,10 @@ import logging
 from flask import Flask, g
 from flask_oidc import OpenIDConnect
 import requests
-
+from graphene_file_upload.flask import FileUploadGraphQLView
 logging.basicConfig(level=logging.DEBUG)
-
+from schema import schema
+from models import Todo, session
 app = Flask(__name__)
 app.config.update({
     'SECRET_KEY': '0497cdafb931478456983f4dd82ce46a',
@@ -38,6 +39,7 @@ def hello_world():
 @oidc.require_login
 def hello_me():
     greeting = ''
+    headers =''
     """Example for protected endpoint that extracts private information from the OpenID Connect id_token.
        Uses the accompanied access_token to access a backend service.
     """
@@ -61,12 +63,12 @@ def hello_me():
             greeting = "Hello %s" % username
     
 
-    return ("""%s your email is %s and your user_id is %s!
+    return ("""%s your email is %s and your user_id is %s accesstoeken is %s!
                <ul>
                  <li><a href="/">Home</a></li>
                  <li><a href="//localhost:8080/realms/myrealm/account?referrer=flask-app&referrer_uri=http://localhost:5000/private&">Account</a></li>
                 </ul>""" %
-            (greeting, email, user_id))
+            (greeting, email, user_id,headers))
 
 
 @app.route('/api', methods=['POST'])
@@ -77,13 +79,20 @@ def hello_api():
     return json.dumps({'hello': 'Welcome %s' % g.oidc_token_info['sub']})
 
 
-@app.route('/logout')
+@app.route('/logout',methods=['GET'])
 def logout():
     """Performs local logout by removing the session cookie."""
 
     oidc.logout()
     return 'Hi, you have been logged out! <a href="/">Return</a>'
 
-
+app.add_url_rule(
+    '/graphq','index',
+    view_func=FileUploadGraphQLView.as_view(
+        'graphq',
+        schema=schema,
+        graphiql=True,
+    )
+)
 if __name__ == '__main__':
     app.run()
