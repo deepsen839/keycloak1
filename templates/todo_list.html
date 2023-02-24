@@ -1,0 +1,41 @@
+{% extends 'common/base.html' %}
+
+{% block content %}
+    <h1>{% block title %} Add a New Todo {% endblock %}</h1>
+
+    <div>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+          <ul>
+          {% for category, message in messages %}
+        <li class="{{ category }}">{{ message }}</li>
+          {% endfor %}
+          </ul>
+          {% endif %}
+        {% endwith %}
+      </div>
+   <table>
+    <tr>
+        <th>ID</th>
+        <th>Tile</th>
+        <th>Description</th>
+        <th>File</th>
+        <th>Action</th>
+    </tr>
+{%for record in result.data.userNotes%}
+<tr>
+    <td>{{record.id}}</td>
+    <td>{{record.title}}</td>
+    <td>{{record.description}}</a></td>
+    <td><a href="static/{{record.path}}" download>{{record.path}}</a></td>
+    <td>
+      <a href="{{url_for('findbyid',id=record.id)}}">Edit</a>
+      <a href="{{url_for('delete_record',id=record.id)}}">Delete</a>
+    
+    
+    </td>
+</tr>
+{% endfor%}
+</table>
+
+{% endblock %}

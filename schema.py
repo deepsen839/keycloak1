@@ -31,12 +31,12 @@ class addTodo(graphene.Mutation):
     # def mutate(root, info, title, description,file1):
     def mutate(root, info,title,description, file1):    
         # find user based on token payload
-        filename = file1.filename
-        file1.save(os.path.join(file_path,filename))
+        # filename = file1.filename
+        # file1.save(os.path.join(file_path,filename))
         todo_record = TodoModel(
             title=title,
             description=description,
-            path=filename
+            path=file1
         )
         session.add(todo_record)
         session.commit()
@@ -48,7 +48,7 @@ class updateTodo(graphene.Mutation):
         todo_id = graphene.Int()
         title = graphene.String()
         description = graphene.String()
-        path = Upload()
+        file1 = Upload()
     ok = graphene.Boolean()
     todo = graphene.Field(Todos)
 
@@ -57,8 +57,9 @@ class updateTodo(graphene.Mutation):
         todo = session.query(TodoModel).filter_by(id=todo_id).first()
         todo.title = title
         todo.description = description
-        filename = file1.filename
-        file1.save(os.path.join(file_path,filename))
+        filename = file1
+        # file1.save(os.path.join(file_path,filename))
+        todo.path = filename
         session.commit()
         ok = True
         todo = todo

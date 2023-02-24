@@ -11,3 +11,21 @@ query {userNotes{
 }
       }
   
+  
+mutation($file:Upload,$id:Int,$title:String,$description:String) {updateTodo(todoId:$id,title:$title,description:$description,file1:$file){
+ok
+
+}
+      }
+      
+      
+      
+      mutation{deleteTodo(todoId:1){
+ok
+
+}
+      }
+      query($id:Int) {findTodo(id:$id){
+  title,description,path,id
+}
+      }
